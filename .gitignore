@@ -3,3 +3,6 @@
 *.tmp
 .DS_Store
 Thumbs.db
+
+# PRD 等内部文档仅保留本地，不推送
+docs/
