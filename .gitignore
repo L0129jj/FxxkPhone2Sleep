@@ -1,0 +1,5 @@
+# 本地截图与临时产物
+.screenshots/
+*.tmp
+.DS_Store
+Thumbs.db
