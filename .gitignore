@@ -6,3 +6,9 @@ Thumbs.db
 
 # PRD 等内部文档仅保留本地，不推送
 docs/
+
+# 云函数依赖
+node_modules/
+
+# 开发者个人配置（微信官方建议不入库）
+project.private.config.json
