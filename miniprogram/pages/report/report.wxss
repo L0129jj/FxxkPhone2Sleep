@@ -1,0 +1,356 @@
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8f6f2, #f2efe8);
+}
+
+/* ---------- 自定义导航 ---------- */
+.nav {
+  width: 100%;
+}
+.nav-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-title {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+.nav-back {
+  position: absolute;
+  left: 24rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-back:active {
+  background: rgba(22, 22, 21, 0.06);
+}
+.back-arrow {
+  font-size: 44rpx;
+  line-height: 1;
+  color: #161615;
+  margin-top: -6rpx;
+}
+
+.press {
+  opacity: 0.8;
+}
+
+/* ---------- 加载 / 失败态 ---------- */
+.state-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 220rpx 60rpx 0;
+}
+.state-title {
+  font-size: 34rpx;
+  font-weight: 650;
+  margin-bottom: 14rpx;
+}
+.state-text {
+  font-size: 26rpx;
+  color: #8b8982;
+  line-height: 1.7;
+  text-align: center;
+}
+.retry-btn {
+  margin-top: 40rpx;
+  padding: 20rpx 64rpx;
+  border-radius: 24rpx;
+  background: #161615;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* ---------- 内容 ---------- */
+.scroll {
+  padding: 8rpx 44rpx 40rpx;
+}
+
+/* 周切换 */
+.week-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1rpx solid rgba(22, 22, 21, 0.08);
+  border-radius: 30rpx;
+  padding: 16rpx 20rpx;
+}
+.ws-btn {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ws-btn.dis {
+  opacity: 0.3;
+}
+.ws-arrow {
+  font-size: 40rpx;
+  line-height: 1;
+  color: #161615;
+  margin-top: -6rpx;
+}
+.ws-center {
+  text-align: center;
+}
+.ws-range {
+  display: block;
+  font-size: 25rpx;
+  font-weight: 600;
+}
+.ws-label {
+  display: block;
+  font-size: 19rpx;
+  color: #8b8982;
+  margin-top: 4rpx;
+  letter-spacing: 0.08em;
+}
+
+/* 汇总卡片 */
+.summary-card {
+  margin-top: 20rpx;
+  border-radius: 40rpx;
+  padding: 36rpx 34rpx 28rpx;
+  background: linear-gradient(145deg, #ffffff 0%, #f7f3e9 100%);
+  border: 1rpx solid rgba(22, 22, 21, 0.08);
+  box-shadow: 0 30rpx 76rpx -64rpx rgba(22, 22, 21, 0.6);
+}
+.summary-label {
+  font-size: 22rpx;
+  color: #8b8982;
+  letter-spacing: 0.04em;
+}
+.summary-number {
+  display: flex;
+  align-items: flex-end;
+  gap: 12rpx;
+  margin-top: 8rpx;
+}
+.summary-number .num {
+  font-size: 96rpx;
+  line-height: 0.98;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  color: #0d8345;
+}
+.summary-number .unit {
+  font-size: 24rpx;
+  color: #8b8982;
+  padding-bottom: 14rpx;
+}
+.summary-dots {
+  display: flex;
+  gap: 10rpx;
+  margin-top: 28rpx;
+}
+.summary-dots .dot {
+  flex: 1;
+  height: 12rpx;
+  border-radius: 999rpx;
+  background: #e8e4da;
+}
+.summary-dots .dot.on {
+  background: linear-gradient(90deg, #22b96b, #0e8a48);
+}
+.summary-foot {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20rpx;
+  color: #a9a69e;
+  margin-top: 16rpx;
+}
+.firstuse-hint {
+  margin-top: 18rpx;
+  padding: 16rpx 20rpx;
+  border-radius: 18rpx;
+  background: #eef4ff;
+  color: #3d5a95;
+  font-size: 22rpx;
+  line-height: 1.6;
+}
+
+/* 日项列表 */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 40rpx 4rpx 18rpx;
+}
+.sh-title {
+  font-size: 25rpx;
+  font-weight: 650;
+}
+.sh-sub {
+  font-size: 20rpx;
+  color: #a9a69e;
+}
+.day-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+.day-row {
+  display: flex;
+  gap: 20rpx;
+  align-items: flex-start;
+  background: #ffffff;
+  border: 1rpx solid rgba(22, 22, 21, 0.08);
+  border-radius: 30rpx;
+  padding: 24rpx 24rpx 22rpx;
+  box-shadow: 0 20rpx 46rpx -44rpx rgba(22, 22, 21, 0.5);
+}
+.day-row.today {
+  border-color: rgba(24, 165, 88, 0.35);
+  box-shadow: 0 0 0 3rpx rgba(24, 165, 88, 0.1), 0 20rpx 46rpx -44rpx rgba(24, 165, 88, 0.4);
+}
+.day-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rpx;
+  width: 84rpx;
+  flex: 0 0 auto;
+}
+.day-num {
+  font-size: 38rpx;
+  line-height: 1;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+.day-week {
+  font-size: 19rpx;
+  color: #a9a69e;
+  margin-top: 8rpx;
+}
+.day-main {
+  flex: 1;
+  min-width: 0;
+}
+.day-times {
+  font-size: 25rpx;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.day-times .empty {
+  color: #a9a69e;
+  font-weight: 500;
+}
+.day-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 8rpx;
+}
+.tag {
+  font-size: 18rpx;
+  line-height: 1.5;
+  padding: 4rpx 12rpx;
+  border-radius: 999rpx;
+  background: #f3f1eb;
+  color: #75726b;
+}
+.tag.good {
+  background: #ecf8f1;
+  color: #118049;
+}
+.tag.warn {
+  background: #fdf0ed;
+  color: #b8382b;
+}
+.day-reason {
+  display: block;
+  font-size: 19rpx;
+  line-height: 1.5;
+  color: #b8382b;
+  margin-top: 8rpx;
+}
+.day-edit {
+  display: block;
+  font-size: 19rpx;
+  color: #a9a69e;
+  margin-top: 8rpx;
+}
+.day-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+  flex: 0 0 auto;
+}
+.badge {
+  font-size: 19rpx;
+  font-weight: 600;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  white-space: nowrap;
+}
+.badge.ok {
+  background: #e7f7ee;
+  color: #0b7c42;
+}
+.badge.bad {
+  background: #fff0ee;
+  color: #c03427;
+}
+.badge.pending {
+  background: #edf2ff;
+  color: #3055b8;
+}
+.badge.muted {
+  background: #f0efeb;
+  color: #8b8982;
+}
+.badge.future {
+  background: transparent;
+  color: #b3b0a8;
+  font-weight: 500;
+  padding-right: 0;
+}
+.today-flag {
+  font-size: 17rpx;
+  letter-spacing: 0.12em;
+  color: #0d8345;
+}
+
+/* 规则说明 */
+.rule-card {
+  margin-top: 30rpx;
+  padding: 24rpx 28rpx;
+  border: 1rpx dashed rgba(22, 22, 21, 0.13);
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.42);
+}
+.rule-title {
+  display: block;
+  font-size: 21rpx;
+  font-weight: 650;
+  color: #45443f;
+  margin-bottom: 10rpx;
+}
+.rule-text {
+  display: block;
+  font-size: 20rpx;
+  line-height: 1.7;
+  color: #8b8982;
+}
+.readonly-note {
+  font-size: 19rpx;
+  color: #a9a69e;
+  text-align: center;
+  margin-top: 28rpx;
+  line-height: 1.6;
+}

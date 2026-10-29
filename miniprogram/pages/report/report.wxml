@@ -1,0 +1,99 @@
+<view class="page">
+  <!-- 自定义导航：返回首页入口 -->
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-bar" style="height: {{navHeight}}px;">
+      <view class="nav-back" hover-class="press" bindtap="onBack" aria-role="button" aria-label="返回首页">
+        <text class="back-arrow">‹</text>
+      </view>
+      <text class="nav-title">周报</text>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="state-wrap" wx:if="{{loading}}">
+    <text class="state-text">正在读取……</text>
+  </view>
+
+  <!-- 读取失败：不伪装成零达标 -->
+  <view class="state-wrap" wx:elif="{{loadFailed}}">
+    <text class="state-title">读取失败</text>
+    <text class="state-text">{{loadErrorMsg}}</text>
+    <view class="retry-btn" hover-class="press" bindtap="onRetry">重试</view>
+  </view>
+
+  <block wx:else>
+    <view class="scroll">
+      <!-- 周切换 -->
+      <view class="week-switch">
+        <view class="ws-btn {{canPrev ? '' : 'dis'}}" hover-class="press" bindtap="onPrevWeek" aria-label="上一周">
+          <text class="ws-arrow">‹</text>
+        </view>
+        <view class="ws-center">
+          <text class="ws-range">{{weekRange}}</text>
+          <text class="ws-label">{{weekLabelText}}</text>
+        </view>
+        <view class="ws-btn {{canNext ? '' : 'dis'}}" hover-class="press" bindtap="onNextWeek" aria-label="下一周">
+          <text class="ws-arrow">›</text>
+        </view>
+      </view>
+
+      <!-- 周标题卡片 -->
+      <view class="summary-card">
+        <text class="summary-label">{{summaryLabel}}</text>
+        <view class="summary-number">
+          <text class="num">{{metCount}}</text>
+          <text class="unit">/ 7 天</text>
+        </view>
+        <view class="summary-dots">
+          <view class="dot {{item.on ? 'on' : ''}}" wx:for="{{dots}}" wx:key="key"></view>
+        </view>
+        <view class="summary-foot">
+          <text>完整打卡 {{completeCount}} 天</text>
+          <text>达标率 {{metPct || 0}}%</text>
+        </view>
+        <view class="firstuse-hint" wx:if="{{firstUseHint}}">今天开始 · 从今晚的记录开始积累</view>
+      </view>
+
+      <view class="section-head">
+        <text class="sh-title">每日记录</text>
+        <text class="sh-sub">{{todayTag}}</text>
+      </view>
+
+      <!-- 七日日项 -->
+      <view class="day-list">
+        <view class="day-row {{item.isCurrent ? 'today' : ''}}" wx:for="{{days}}" wx:key="date">
+          <view class="day-date">
+            <text class="day-num">{{item.dayNum}}</text>
+            <text class="day-week">{{item.weekday}}</text>
+          </view>
+          <view class="day-main">
+            <view class="day-times">
+              <text wx:if="{{item.status === 'not_started'}}" class="empty">该晚还未开始</text>
+              <text wx:elif="{{item.status === 'not_used'}}" class="empty">尚未使用</text>
+              <text wx:elif="{{item.status === 'pending_sleep'}}" class="empty">睡 未填写 · 起 未填写</text>
+              <text wx:else>睡 {{item.bedtime || '未填写'}} · 起 {{item.wake || '未填写'}}</text>
+            </view>
+            <view class="day-tags" wx:if="{{item.tags.length}}">
+              <text class="tag {{tag.cls}}" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="text">{{tag.text}}</text>
+            </view>
+            <text class="day-reason" wx:if="{{item.reasonText}}">未达标原因：{{item.reasonText}}</text>
+            <text class="day-edit" wx:if="{{item.editable}}">截止前可修改</text>
+          </view>
+          <view class="day-side">
+            <text class="today-flag" wx:if="{{item.isCurrent}}">今晚</text>
+            <text class="badge {{item.badgeCls}}">{{item.badgeLabel}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="rule-card">
+        <text class="rule-title">达标怎么算</text>
+        <text class="rule-text">完整打卡（是否刷手机、几点睡、几点起三项齐全）且没刷手机；设置了目标时，准备入睡时间还不能晚于当晚目标。未完成打卡不等于刷了手机。</text>
+      </view>
+      <view class="readonly-note">
+        <text>记录时间由你自己填写，仅用于习惯回顾，不是睡眠监测。</text>
+      </view>
+      <view class="safe-bottom"></view>
+    </view>
+  </block>
+</view>
