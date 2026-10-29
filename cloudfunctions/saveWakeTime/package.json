@@ -1,0 +1,9 @@
+{
+  "name": "saveWakeTime",
+  "version": "1.0.0",
+  "description": "补录或修改起床时间，校验已有睡前记录及时间关系",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

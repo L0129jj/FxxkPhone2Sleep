@@ -1,0 +1,9 @@
+{
+  "name": "saveBedtime",
+  "version": "1.0.0",
+  "description": "原子保存是否刷手机与准备入睡时间，首次保存写入目标快照",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "getCurrentRecord",
+  "version": "1.0.0",
+  "description": "返回当前周期、已保存记录、当晚目标与下一晚安排",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

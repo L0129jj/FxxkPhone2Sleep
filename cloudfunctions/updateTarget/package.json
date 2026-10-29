@@ -1,0 +1,9 @@
+{
+  "name": "updateTarget",
+  "version": "1.0.0",
+  "description": "设置、修改或关闭目标就寝时间，计算生效归属日期",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
