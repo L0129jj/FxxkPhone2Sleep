@@ -1,0 +1,44 @@
+<view class="tg-mask {{visible ? 'open' : ''}}" bindtap="onCancel" catchtouchmove="noop"></view>
+<view class="tg-sheet {{visible ? 'open' : ''}}" catchtouchmove="noop">
+  <view class="grabber"></view>
+  <text class="tg-title">目标就寝时间</text>
+  <text class="tg-desc">可选。设置后，准备入睡时间不晚于目标才算按时。</text>
+
+  <view class="tg-info">
+    <view class="tg-info-row">
+      <text class="tg-info-label">当晚目标</text>
+      <text class="tg-info-value {{tonightTargetText === '未设置' ? 'muted' : ''}}">{{tonightTargetText}}</text>
+    </view>
+    <view class="tg-info-row">
+      <text class="tg-info-label">下一晚安排</text>
+      <text class="tg-info-value {{nextTargetText === '未设置' ? 'muted' : ''}}">{{nextTargetText}}</text>
+    </view>
+  </view>
+
+  <view class="tg-switch-row">
+    <view class="tg-switch-main">
+      <text class="tg-switch-title">启用目标</text>
+      <text class="tg-switch-desc">{{switchOn ? '开启后检查准备入睡时间' : '关闭时不检查按时睡觉'}}</text>
+    </view>
+    <view class="tg-switch {{switchOn ? 'on' : ''}}" bindtap="onToggleSwitch">
+      <view class="tg-switch-dot"></view>
+    </view>
+  </view>
+
+  <picker mode="time" value="{{timeValue}}" bindchange="onTimeChange" disabled="{{submitting || !switchOn}}">
+    <view class="tg-time-wrap {{switchOn ? '' : 'dis'}}">
+      <text class="tg-time">{{switchOn ? timeValue : '--:--'}}</text>
+    </view>
+  </picker>
+
+  <view class="tg-effective {{hintLocked ? 'locked' : ''}}">{{hintText}}</view>
+  <view class="tg-error" wx:if="{{errorText}}">{{errorText}}</view>
+
+  <view class="tg-actions">
+    <view class="tg-btn ghost" hover-class="press" bindtap="onCancel">取消</view>
+    <view class="tg-btn primary {{submitting ? 'dis' : ''}}" hover-class="press" bindtap="onSave">
+      {{submitting ? '正在保存…' : '保存设置'}}
+    </view>
+  </view>
+  <view class="safe-bottom"></view>
+</view>

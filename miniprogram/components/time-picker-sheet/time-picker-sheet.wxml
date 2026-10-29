@@ -1,0 +1,29 @@
+<view class="tp-mask {{visible ? 'open' : ''}}" bindtap="onCancel" catchtouchmove="noop"></view>
+<view class="tp-sheet {{visible ? 'open' : ''}}" catchtouchmove="noop">
+  <view class="grabber"></view>
+  <text class="tp-title">{{title}}</text>
+  <text class="tp-desc">{{desc}}</text>
+
+  <view class="tp-seg">
+    <view class="tp-seg-item {{seg === 0 ? 'on' : ''}}" data-seg="0" bindtap="onPickSeg">{{day0Label}}</view>
+    <view class="tp-seg-item {{seg === 1 ? 'on' : ''}} {{seg1Disabled ? 'dis' : ''}}" data-seg="1" bindtap="onPickSeg">{{day1Label}}</view>
+  </view>
+
+  <picker mode="time" value="{{timeValue}}" bindchange="onTimeChange" disabled="{{submitting}}">
+    <view class="tp-time-wrap">
+      <text class="tp-time">{{timeValue}}</text>
+      <text class="tp-time-unit">精度到分钟</text>
+    </view>
+  </picker>
+
+  <view class="tp-error" wx:if="{{errorText}}">{{errorText}}</view>
+  <text class="tp-hint" wx:if="{{hint}}">{{hint}}</text>
+
+  <view class="tp-actions">
+    <view class="tp-btn ghost" hover-class="press" bindtap="onCancel">取消</view>
+    <view class="tp-btn primary {{submitting ? 'dis' : ''}}" hover-class="press" bindtap="onConfirm">
+      {{submitting ? '正在保存…' : '确认保存'}}
+    </view>
+  </view>
+  <view class="safe-bottom"></view>
+</view>
