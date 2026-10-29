@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "time-picker-sheet": "/components/time-picker-sheet/time-picker-sheet",
+    "target-sheet": "/components/target-sheet/target-sheet"
+  }
+}

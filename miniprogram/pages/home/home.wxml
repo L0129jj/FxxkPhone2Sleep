@@ -1,0 +1,159 @@
+<view class="page">
+  <!-- 自定义导航（避让胶囊与状态栏） -->
+  <view class="nav" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-bar" style="height: {{navHeight}}px;">
+      <text class="nav-title">睡前记录</text>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="state-wrap" wx:if="{{loading}}">
+    <text class="state-text">正在读取……</text>
+  </view>
+
+  <!-- 读取失败：不伪装成空数据，提供重试 -->
+  <view class="state-wrap" wx:elif="{{loadFailed}}">
+    <text class="state-title">读取失败</text>
+    <text class="state-text">{{loadErrorMsg}}</text>
+    <view class="retry-btn" hover-class="press" bindtap="onRetry">重试</view>
+  </view>
+
+  <!-- 正常内容 -->
+  <block wx:else>
+    <view class="scroll">
+      <view class="date-line">
+        <view class="date-dot"></view>
+        <text>{{todayText}}</text>
+      </view>
+
+      <view class="home-title">
+        <text>这一晚，</text>
+        <text>你刷手机了吗？</text>
+      </view>
+      <text class="tagline">{{tagline}}</text>
+
+      <view class="period-pill">
+        <text>记录归属：</text>
+        <text class="strong">{{periodDateText}}</text>
+        <text>这一晚 · 截止 {{deadlineText}}</text>
+      </view>
+
+      <view class="toggle-wrap">
+        <view
+          class="big-toggle {{pendingPhone ? 'is-red' : 'is-green'}}"
+          hover-class="press"
+          bindtap="onTogglePhone"
+          aria-role="button"
+          aria-label="{{pendingPhone ? '今晚刷了手机，点击切换为没刷手机' : '今晚没刷手机，点击切换为刷了手机'}}"
+        >
+          <text class="big-hint">点击切换</text>
+          <text class="big-main">{{pendingPhone ? '是' : '否'}}</text>
+          <text class="big-sub">{{pendingPhone ? '忍不住刷了手机' : '没刷手机'}}</text>
+        </view>
+        <text class="toggle-state {{statusWarn ? 'warn' : ''}}">{{statusText}}</text>
+      </view>
+
+      <view class="time-grid">
+        <view class="time-card" hover-class="press" bindtap="openSleepSheet">
+          <text class="tc-top">今天几点睡</text>
+          <text class="tc-value {{sleepText ? '' : 'empty'}}">{{sleepText || '未填写'}}</text>
+          <text class="tc-hint">{{sleepText ? '准备入睡时间 · 点击修改' : '准备入睡时间'}}</text>
+        </view>
+        <view class="time-card" hover-class="press" bindtap="openWakeSheet">
+          <view class="mini-badge" wx:if="{{sleepText && !wakeText}}">待补齐</view>
+          <text class="tc-top">明天几点起</text>
+          <text class="tc-value {{wakeText ? '' : 'empty'}}">{{wakeText || '未填写'}}</text>
+          <text class="tc-hint">{{wakeText ? '起床时间 · 点击修改' : '次日 12:00 前补齐'}}</text>
+        </view>
+      </view>
+
+      <view class="result-banner {{banner.cls}}" wx:if="{{banner.show}}">
+        <view class="rb-body">
+          <text class="rb-title">{{banner.title}}</text>
+          <text class="rb-desc">{{banner.desc}}</text>
+        </view>
+      </view>
+
+      <view class="row-card" hover-class="press" bindtap="openTargetSheet">
+        <view class="row-main">
+          <text class="row-title">目标就寝时间（可选）</text>
+          <text class="row-sub">{{targetSubText}}</text>
+        </view>
+        <text class="row-value">{{targetValueText}}</text>
+        <text class="chevron">›</text>
+      </view>
+
+      <view class="report-card" hover-class="press" bindtap="goReport">
+        <view class="report-main">
+          <text class="report-label">本周周报</text>
+          <view class="report-value">已达标 <text class="em">{{weekMetCount}}</text> 天</view>
+          <text class="report-sub">
+            {{weekCardVisible ? '完整打卡 ' + weekCompleteCount + ' 天 · 查看每日结果' : '查看每日结果'}}
+          </text>
+        </view>
+        <view class="report-arrow">
+          <text class="arrow">›</text>
+        </view>
+      </view>
+
+      <view class="deadline-note">
+        <text>请于{{deadlineDayWord}} 12:00 前补齐起床时间，逾期后本晚只读。</text>
+        <text>记录时间由你自己填写，仅用于习惯回顾，不是睡眠监测。</text>
+      </view>
+      <view class="safe-bottom"></view>
+    </view>
+  </block>
+</view>
+
+<!-- C-01 几点睡选择器 -->
+<time-picker-sheet
+  data-sheet="sleepSheet"
+  visible="{{sleepSheet.visible}}"
+  submitting="{{sleepSheet.submitting}}"
+  errorText="{{sleepSheet.errorText}}"
+  title="{{sleepSheet.title}}"
+  desc="{{sleepSheet.desc}}"
+  hint="{{sleepSheet.hint}}"
+  day0Label="{{sleepSheet.day0Label}}"
+  day1Label="{{sleepSheet.day1Label}}"
+  seg1Disabled="{{sleepSheet.seg1Disabled}}"
+  initialSeg="{{sleepSheet.initialSeg}}"
+  initialTime="{{sleepSheet.initialTime}}"
+  bind:confirm="onSleepConfirm"
+  bind:cancel="onSheetCancel"
+/>
+
+<!-- C-01 几点起选择器 -->
+<time-picker-sheet
+  data-sheet="wakeSheet"
+  visible="{{wakeSheet.visible}}"
+  submitting="{{wakeSheet.submitting}}"
+  errorText="{{wakeSheet.errorText}}"
+  title="{{wakeSheet.title}}"
+  desc="{{wakeSheet.desc}}"
+  hint="{{wakeSheet.hint}}"
+  day0Label="{{wakeSheet.day0Label}}"
+  day1Label="{{wakeSheet.day1Label}}"
+  seg1Disabled="{{wakeSheet.seg1Disabled}}"
+  initialSeg="{{wakeSheet.initialSeg}}"
+  initialTime="{{wakeSheet.initialTime}}"
+  bind:confirm="onWakeConfirm"
+  bind:cancel="onSheetCancel"
+/>
+
+<!-- C-02 目标设置 -->
+<target-sheet
+  data-sheet="targetSheet"
+  visible="{{targetSheet.visible}}"
+  submitting="{{targetSheet.submitting}}"
+  errorText="{{targetSheet.errorText}}"
+  initialEnabled="{{targetSheet.initialEnabled}}"
+  initialTime="{{targetSheet.initialTime}}"
+  tonightSubmitted="{{targetSheet.tonightSubmitted}}"
+  tonightTargetText="{{targetSheet.tonightTargetText}}"
+  nextTargetText="{{targetSheet.nextTargetText}}"
+  nextDateText="{{targetSheet.nextDateText}}"
+  isFirstSetting="{{targetSheet.isFirstSetting}}"
+  bind:save="onTargetSave"
+  bind:cancel="onSheetCancel"
+/>
