@@ -6,7 +6,8 @@
  * - 默认红色「是」只是待提交值；打开页面或仅切换按钮不产生云端记录。
  * - 是否刷手机 + 准备入睡时间通过「几点睡」确认原子保存（saveBedtime）。
  * - 起床时间通过「几点起」确认保存（saveWakeTime），需已有睡前记录。
- * - 保存成功进入刚保存记录所属的周报；失败保留输入可重试。
+ * - 睡前信息保存后停留首页（2026-10-30 调整，覆盖 PRD 保存即跳转的要求），
+ *   便于按任意顺序调整按钮与时间；补齐起床时间、记录完整时才自动进入周报。
  * - 页面停留跨过 12:00 自动刷新周期；周期过期由服务端最终判定。
  */
 const api = require('../../utils/api.js')
@@ -385,7 +386,8 @@ Page({
         })
         this.renderBanner()
         this.renderStates()
-        this.goReportOf(this.periodDate)
+        // 睡前保存后停留首页，可继续按任意顺序调整按钮与时间
+        wx.showToast({ title: '已保存', icon: 'success' })
       })
       .catch((err2) => this.handleSaveError(err2, 'sleepSheet'))
   },
