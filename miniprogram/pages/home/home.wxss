@@ -351,3 +351,16 @@
   text-align: center;
   white-space: pre-line;
 }
+
+/* ---------- 数据管理入口 ---------- */
+.data-entry {
+  margin: 6rpx auto 0;
+  padding: 16rpx 28rpx;
+  font-size: 21rpx;
+  color: #8b8982;
+  text-align: center;
+  border-radius: 999rpx;
+}
+.data-entry.disabled {
+  color: #c2bfb8;
+}

@@ -44,6 +44,7 @@ Page({
     statusWarn: false,
     saving: false,
     saveFailed: false,
+    clearing: false,
 
     // 结果横幅（服务端判定）
     banner: { show: false, cls: 'pending', title: '', desc: '' },
@@ -315,7 +316,7 @@ Page({
   /* ---------------- 大按钮 ---------------- */
 
   onTogglePhone() {
-    if (this.data.saving) return
+    if (this.data.saving || this.data.clearing) return
     const pendingPhone = !this.data.pendingPhone
     const dirty = this.data.hasSaved && pendingPhone !== this.data.phoneSaved
     this.setData({ pendingPhone, dirty, saveFailed: false })
@@ -325,7 +326,7 @@ Page({
   /* ---------------- 几点睡 ---------------- */
 
   openSleepSheet() {
-    if (this.data.saving) return
+    if (this.data.saving || this.data.clearing) return
     const saved = this.record && this.record.bedtime_at ? this.record.bedtime_at : null
     let initialSeg = 0
     let initialTime = ''
@@ -408,7 +409,7 @@ Page({
   /* ---------------- 几点起 ---------------- */
 
   openWakeSheet() {
-    if (this.data.saving) return
+    if (this.data.saving || this.data.clearing) return
     if (!this.record || !this.record.bedtime_at) {
       wx.showToast({ title: '建议先填写「几点睡」，再补录起床时间', icon: 'none', duration: 2400 })
       this.openSleepSheet()
@@ -524,7 +525,7 @@ Page({
   /* ---------------- 目标弹层 ---------------- */
 
   openTargetSheet() {
-    if (this.data.saving) return
+    if (this.data.saving || this.data.clearing) return
     this.setData({ 'targetSheet.visible': true, 'targetSheet.errorText': '' })
   },
 
@@ -565,6 +566,42 @@ Page({
   onSheetCancel(e) {
     const key = e.currentTarget.dataset.sheet
     this.setData({ [key + '.visible']: false, [key + '.errorText']: '' })
+  },
+
+  /* ---------------- 清空全部个人数据 ---------------- */
+
+  onClearData() {
+    if (this.data.saving || this.data.clearing) return
+    wx.showModal({
+      title: '清空全部数据？',
+      content: '将永久删除你的睡前记录、目标设置和用户档案，无法恢复。周报会回到首次使用状态。',
+      confirmText: '清空',
+      confirmColor: '#F43B2F',
+      cancelText: '取消',
+      success: (res) => {
+        if (!res.confirm) return
+        this.setData({ clearing: true, saveFailed: false })
+        api
+          .call('deleteMyData', {})
+          .then(() => {
+            this.setData({ clearing: false })
+            wx.showToast({ title: '已清空', icon: 'success' })
+            this.fetchAll()
+          })
+          .catch((e) => {
+            this.setData({ clearing: false })
+            if (e && e.code === 'E_ENV') {
+              this.handleLoadFail(e)
+              return
+            }
+            wx.showModal({
+              title: '清空失败',
+              content: (e && e.message) || '请稍后重试',
+              showCancel: false
+            })
+          })
+      }
+    })
   },
 
   /* ---------------- 周报入口与周期 watcher ---------------- */

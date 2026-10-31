@@ -257,7 +257,7 @@ async function getSettings(db, openid) {
   }
 }
 
-async function findSuccessLog(db, requestId, event) {
+async function findSuccessLog(db, requestId, event, openid) {
   if (!requestId) return null
   try {
     const r = await db
@@ -265,7 +265,10 @@ async function findSuccessLog(db, requestId, event) {
       .where({ request_id: requestId, event, result: 'success' })
       .limit(1)
       .get()
-    return (r.data && r.data[0]) || null
+    const log = (r.data && r.data[0]) || null
+    // 日志必须属于当前用户，避免不同用户的 requestId 碰撞造成误重放
+    if (!log || log.owner_id !== openid) return null
+    return log
   } catch (e) {
     return null
   }

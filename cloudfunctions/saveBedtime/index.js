@@ -23,7 +23,7 @@ exports.main = async (event) => {
     const { requestId, recordDate, phoneUsed, bedtimeAt, baseRevision } = event || {}
 
     // 幂等重放：同一请求已成功过，直接返回当时的记录，不重复计数
-    const prevLog = await core.findSuccessLog(db, requestId, EVENT)
+    const prevLog = await core.findSuccessLog(db, requestId, EVENT, OPENID)
     if (prevLog && prevLog.record_date) {
       const rec = await core.getRecord(db, OPENID, prevLog.record_date)
       const ni = core.nowInfo()
@@ -89,6 +89,7 @@ exports.main = async (event) => {
 
     const saved = await core.getRecord(db, OPENID, recordDate)
     await core.writeLog(db, {
+      owner_id: OPENID,
       request_id: requestId || '',
       event: EVENT,
       result: 'success',

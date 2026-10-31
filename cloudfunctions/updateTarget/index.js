@@ -29,7 +29,7 @@ exports.main = async (event) => {
     if (enabled && !core.isHMStr(targetTime)) return core.fail('E_PARAM', '目标时间格式错误')
 
     // 幂等重放
-    const prevLog = await core.findSuccessLog(db, requestId, EVENT)
+    const prevLog = await core.findSuccessLog(db, requestId, EVENT, OPENID)
     if (prevLog && prevLog.effective_record_date) {
       const settings = await core.getSettings(db, OPENID)
       const ni = core.nowInfo()
@@ -66,6 +66,7 @@ exports.main = async (event) => {
 
     const settingsAfter = await core.getSettings(db, OPENID)
     await core.writeLog(db, {
+      owner_id: OPENID,
       request_id: requestId || '',
       event: EVENT,
       result: 'success',

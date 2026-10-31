@@ -100,6 +100,10 @@
         <text>请于{{deadlineDayWord}} 12:00 前补齐起床时间，逾期后本晚只读。</text>
         <text>记录时间由你自己填写，仅用于习惯回顾，不是睡眠监测。</text>
       </view>
+
+      <view class="data-entry {{clearing ? 'disabled' : ''}}" hover-class="press" bindtap="onClearData">
+        <text>{{clearing ? '正在清空……' : '清空我的全部数据'}}</text>
+      </view>
       <view class="safe-bottom"></view>
     </view>
   </block>
