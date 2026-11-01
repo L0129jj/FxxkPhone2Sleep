@@ -1,5 +1,5 @@
 <view class="tg-mask {{visible ? 'open' : ''}}" bindtap="onCancel" catchtouchmove="noop"></view>
-<view class="tg-sheet {{visible ? 'open' : ''}}" catchtouchmove="noop">
+<view class="tg-sheet theme-{{theme}} {{visible ? 'open' : ''}}" catchtouchmove="noop">
   <view class="grabber"></view>
   <text class="tg-title">目标就寝时间</text>
   <text class="tg-desc">可选。设置后，准备入睡时间不晚于目标才算按时。</text>

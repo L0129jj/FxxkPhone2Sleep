@@ -1,3 +1,49 @@
+/* 主题变量（组件样式隔离，需自带一份） */
+.theme-light {
+  --sheet-bg: #fbfaf7;
+  --text: #17171c;
+  --text-2: #4e4b44;
+  --text-3: #6e6960;
+  --card: #ffffff;
+  --card-line: rgba(23, 23, 28, 0.09);
+  --divider: rgba(23, 23, 28, 0.06);
+  --grabber: #d9d5cc;
+  --switch-off: #dedad1;
+  --mint: #0e9a80;
+  --btn-primary-bg: #17171c;
+  --btn-primary-ink: #ffffff;
+  --btn-ghost-bg: #efede7;
+  --btn-ghost-ink: #45443f;
+  --bad-bg: #fdf0ed;
+  --bad-ink: #b8382b;
+  --pending-bg: #eef4ff;
+  --pending-ink: #3d5a95;
+  --warn-bg: #fdf4e6;
+  --warn-ink: #8a6114;
+}
+.theme-dark {
+  --sheet-bg: #11141f;
+  --text: #f4f6fb;
+  --text-2: #aab1c4;
+  --text-3: #7e8598;
+  --card: rgba(255, 255, 255, 0.06);
+  --card-line: rgba(255, 255, 255, 0.12);
+  --divider: rgba(255, 255, 255, 0.08);
+  --grabber: rgba(255, 255, 255, 0.22);
+  --switch-off: rgba(255, 255, 255, 0.16);
+  --mint: #5eead4;
+  --btn-primary-bg: #f4f6fb;
+  --btn-primary-ink: #0a0c14;
+  --btn-ghost-bg: rgba(255, 255, 255, 0.09);
+  --btn-ghost-ink: #c6ccda;
+  --bad-bg: rgba(255, 155, 138, 0.14);
+  --bad-ink: #ffc3b8;
+  --pending-bg: rgba(120, 150, 255, 0.16);
+  --pending-ink: #b9c8ff;
+  --warn-bg: rgba(243, 194, 126, 0.14);
+  --warn-ink: #f0ca93;
+}
+
 .tg-mask {
   position: fixed;
   left: 0;
@@ -21,7 +67,8 @@
   right: 0;
   bottom: 0;
   z-index: 45;
-  background: #fbfaf7;
+  background: var(--sheet-bg);
+  color: var(--text);
   border-radius: 44rpx 44rpx 0 0;
   padding: 20rpx 40rpx 24rpx;
   transform: translateY(103%);
@@ -38,7 +85,7 @@
   width: 64rpx;
   height: 8rpx;
   border-radius: 4rpx;
-  background: #d9d5cc;
+  background: var(--grabber);
   margin: 0 auto 32rpx;
 }
 
@@ -47,19 +94,20 @@
   font-size: 38rpx;
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--text);
 }
 .tg-desc {
   display: block;
   font-size: 22rpx;
   line-height: 1.6;
-  color: #8b8982;
+  color: var(--text-3);
   margin-top: 10rpx;
 }
 
 .tg-info {
   margin-top: 24rpx;
-  background: #ffffff;
-  border: 1rpx solid rgba(22, 22, 21, 0.09);
+  background: var(--card);
+  border: 1rpx solid var(--card-line);
   border-radius: 20rpx;
   padding: 4rpx 24rpx;
 }
@@ -70,18 +118,19 @@
   padding: 20rpx 0;
 }
 .tg-info-row + .tg-info-row {
-  border-top: 1rpx solid rgba(22, 22, 21, 0.06);
+  border-top: 1rpx solid var(--divider);
 }
 .tg-info-label {
   font-size: 24rpx;
-  color: #8b8982;
+  color: var(--text-3);
 }
 .tg-info-value {
   font-size: 28rpx;
   font-weight: 650;
+  color: var(--text);
 }
 .tg-info-value.muted {
-  color: #a9a69e;
+  color: var(--text-3);
   font-weight: 500;
 }
 
@@ -96,18 +145,19 @@
   display: block;
   font-size: 28rpx;
   font-weight: 600;
+  color: var(--text);
 }
 .tg-switch-desc {
   display: block;
   font-size: 20rpx;
-  color: #8b8982;
+  color: var(--text-3);
   margin-top: 4rpx;
 }
 .tg-switch {
   width: 88rpx;
   height: 52rpx;
   border-radius: 999rpx;
-  background: #dedad1;
+  background: var(--switch-off);
   position: relative;
   transition: background 0.22s;
   flex: 0 0 auto;
@@ -124,7 +174,7 @@
   transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.3, 1);
 }
 .tg-switch.on {
-  background: #18a558;
+  background: var(--mint);
 }
 .tg-switch.on .tg-switch-dot {
   transform: translateX(36rpx);
@@ -132,8 +182,8 @@
 
 .tg-time-wrap {
   margin-top: 20rpx;
-  background: #ffffff;
-  border: 1rpx solid rgba(22, 22, 21, 0.09);
+  background: var(--card);
+  border: 1rpx solid var(--card-line);
   border-radius: 24rpx;
   padding: 14rpx 24rpx;
   display: flex;
@@ -148,27 +198,28 @@
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   line-height: 1.25;
+  color: var(--text);
 }
 
 .tg-effective {
   margin-top: 22rpx;
   padding: 20rpx 24rpx;
   border-radius: 20rpx;
-  background: #eef4ff;
-  color: #3d5a95;
+  background: var(--pending-bg);
+  color: var(--pending-ink);
   font-size: 22rpx;
   line-height: 1.65;
 }
 .tg-effective.locked {
-  background: #fdf4e6;
-  color: #8a6114;
+  background: var(--warn-bg);
+  color: var(--warn-ink);
 }
 .tg-error {
   margin-top: 16rpx;
   font-size: 22rpx;
-  color: #c03427;
+  color: var(--bad-ink);
   line-height: 1.55;
-  background: #fff0ee;
+  background: var(--bad-bg);
   border-radius: 16rpx;
   padding: 14rpx 20rpx;
 }
@@ -189,13 +240,13 @@
 }
 .tg-btn.ghost {
   flex: 1;
-  background: #efede7;
-  color: #45443f;
+  background: var(--btn-ghost-bg);
+  color: var(--btn-ghost-ink);
 }
 .tg-btn.primary {
   flex: 1.4;
-  background: #161615;
-  color: #ffffff;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-ink);
 }
 .tg-btn.primary.dis {
   opacity: 0.55;
@@ -203,4 +254,9 @@
 .press {
   transform: scale(0.98);
   opacity: 0.9;
+}
+
+/* 组件样式隔离，app.wxss 的 .safe-bottom 不生效，需自带一份 */
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 24rpx);
 }

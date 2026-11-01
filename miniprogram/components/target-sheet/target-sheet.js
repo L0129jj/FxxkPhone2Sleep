@@ -13,6 +13,7 @@
  */
 Component({
   properties: {
+    theme: { type: String, value: 'light' },
     visible: { type: Boolean, value: false },
     submitting: { type: Boolean, value: false },
     errorText: { type: String, value: '' },

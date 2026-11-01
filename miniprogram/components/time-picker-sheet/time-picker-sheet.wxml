@@ -1,5 +1,5 @@
 <view class="tp-mask {{visible ? 'open' : ''}}" bindtap="onCancel" catchtouchmove="noop"></view>
-<view class="tp-sheet {{visible ? 'open' : ''}}" catchtouchmove="noop">
+<view class="tp-sheet theme-{{theme}} {{visible ? 'open' : ''}}" catchtouchmove="noop">
   <view class="grabber"></view>
   <text class="tp-title">{{title}}</text>
   <text class="tp-desc">{{desc}}</text>

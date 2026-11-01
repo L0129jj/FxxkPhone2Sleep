@@ -1,7 +1,23 @@
-<view class="page">
-  <!-- 自定义导航（避让胶囊与状态栏） -->
+<view class="page theme-{{theme}}">
+  <!-- 自定义导航（左侧主题切换，右侧避让胶囊） -->
   <view class="nav" style="padding-top: {{statusBarHeight}}px;">
     <view class="nav-bar" style="height: {{navHeight}}px;">
+      <view
+        class="theme-btn"
+        hover-class="press"
+        bindtap="onToggleTheme"
+        aria-role="button"
+        aria-label="{{theme === 'dark' ? '切换到浅色模式' : '切换到深色模式'}}"
+      >
+        <view class="ic ic-sun" wx:if="{{theme === 'dark'}}">
+          <view class="sun-ray h"></view>
+          <view class="sun-ray v"></view>
+          <view class="sun-core"></view>
+        </view>
+        <view class="ic ic-moon" wx:else>
+          <view class="moon-disc"></view>
+        </view>
+      </view>
       <text class="nav-title">睡前记录</text>
     </view>
   </view>
@@ -21,79 +37,98 @@
   <!-- 正常内容 -->
   <block wx:else>
     <view class="scroll">
-      <view class="date-line">
-        <view class="date-dot"></view>
-        <text>{{todayText}}</text>
+      <view class="hero">
+        <view class="date-line">
+          <view class="date-dot"></view>
+          <text>{{todayText}}</text>
+        </view>
+        <text class="home-title">今晚，你刷手机了吗？</text>
+        <view class="meta-line">
+          <text>记录 </text>
+          <text class="strong">{{periodDateText}}</text>
+          <text> 这一晚 · 截止 {{deadlineText}}</text>
+        </view>
       </view>
 
-      <view class="home-title">
-        <text>这一晚，</text>
-        <text>你刷手机了吗？</text>
-      </view>
-      <text class="tagline">{{tagline}}</text>
-
-      <view class="period-pill">
-        <text>记录归属：</text>
-        <text class="strong">{{periodDateText}}</text>
-        <text>这一晚 · 截止 {{deadlineText}}</text>
-      </view>
-
-      <view class="toggle-wrap">
+      <!-- 核心动作：这一晚唯一的大按钮 -->
+      <view class="dial-wrap">
         <view
-          class="big-toggle {{pendingPhone ? 'is-red' : 'is-green'}}"
-          hover-class="press"
+          class="dial {{pendingPhone ? 'is-yes' : 'is-no'}}"
+          hover-class="dial-press"
           bindtap="onTogglePhone"
           aria-role="button"
           aria-label="{{pendingPhone ? '今晚刷了手机，点击切换为没刷手机' : '今晚没刷手机，点击切换为刷了手机'}}"
         >
-          <text class="big-hint">点击切换</text>
-          <text class="big-main">{{pendingPhone ? '是' : '否'}}</text>
-          <text class="big-sub">{{pendingPhone ? '忍不住刷了手机' : '没刷手机'}}</text>
-        </view>
-        <text class="toggle-state {{statusWarn ? 'warn' : ''}}">{{statusText}}</text>
-      </view>
-
-      <view class="time-grid">
-        <view class="time-card" hover-class="press" bindtap="openSleepSheet">
-          <text class="tc-top">今天几点睡</text>
-          <text class="tc-value {{sleepText ? '' : 'empty'}}">{{sleepText || '未填写'}}</text>
-          <text class="tc-hint">{{sleepText ? '准备入睡时间 · 点击修改' : '准备入睡时间'}}</text>
-        </view>
-        <view class="time-card" hover-class="press" bindtap="openWakeSheet">
-          <view class="mini-badge" wx:if="{{sleepText && !wakeText}}">待补齐</view>
-          <text class="tc-top">明天几点起</text>
-          <text class="tc-value {{wakeText ? '' : 'empty'}}">{{wakeText || '未填写'}}</text>
-          <text class="tc-hint">{{wakeText ? '起床时间 · 点击修改' : '次日 12:00 前补齐'}}</text>
+          <view class="dial-orbit"></view>
+          <text class="dial-hint">点击切换</text>
+          <text class="dial-main">{{pendingPhone ? '是' : '否'}}</text>
+          <text class="dial-sub">{{pendingPhone ? '忍不住刷了手机' : '没刷手机'}}</text>
         </view>
       </view>
+      <text class="dial-status {{statusWarn ? 'warn' : ''}}">{{statusText}}</text>
 
+      <!-- 入睡 / 起床 -->
+      <view class="time-row">
+        <view class="tf" hover-class="press" bindtap="openSleepSheet" aria-role="button" aria-label="填写准备入睡时间">
+          <view class="tf-label">
+            <view class="tf-dot sleep"></view>
+            <text>入睡</text>
+          </view>
+          <text class="tf-val" wx:if="{{sleepText}}">{{sleepText}}</text>
+          <text class="tf-val empty" wx:else>＋ 添加</text>
+          <text class="tf-hint">{{sleepText ? '点击修改' : '准备入睡时间'}}</text>
+        </view>
+        <view class="tf-div"></view>
+        <view class="tf" hover-class="press" bindtap="openWakeSheet" aria-role="button" aria-label="填写起床时间">
+          <view class="tf-label">
+            <view class="tf-dot wake"></view>
+            <text>起床</text>
+            <text class="tf-badge" wx:if="{{sleepText && !wakeText}}">待补</text>
+          </view>
+          <text class="tf-val" wx:if="{{wakeText}}">{{wakeText}}</text>
+          <text class="tf-val empty" wx:else>＋ 添加</text>
+          <text class="tf-hint">{{wakeText ? '点击修改' : '次日 12:00 前补'}}</text>
+        </view>
+      </view>
+
+      <!-- 服务端判定结果 -->
       <view class="result-banner {{banner.cls}}" wx:if="{{banner.show}}">
-        <view class="rb-body">
-          <text class="rb-title">{{banner.title}}</text>
-          <text class="rb-desc">{{banner.desc}}</text>
+        <text class="rb-title">{{banner.title}}</text>
+        <text class="rb-desc">{{banner.desc}}</text>
+      </view>
+
+      <!-- 本周进度 -->
+      <view class="week-card" hover-class="press" bindtap="goReport" aria-role="button" aria-label="查看本周周报">
+        <view class="week-head">
+          <text class="wk-label">本周进度</text>
+          <text class="wk-sub" wx:if="{{weekCardVisible}}">完整打卡 {{weekCompleteCount}} 天</text>
+        </view>
+        <view class="week-main" wx:if="{{weekCardVisible}}">
+          <view class="wk-num">
+            <text class="wk-met">{{weekMetCount}}</text>
+            <text class="wk-total">/7</text>
+            <text class="wk-unit">天达标</text>
+          </view>
+          <view class="chev">›</view>
+        </view>
+        <view class="week-main" wx:else>
+          <text class="wk-fallback">查看每日结果</text>
+          <view class="chev">›</view>
+        </view>
+        <view class="segs" wx:if="{{weekCardVisible}}">
+          <view class="seg {{item.on ? 'on' : ''}}" wx:for="{{weekSegs}}" wx:key="i"></view>
         </view>
       </view>
 
-      <view class="row-card" hover-class="press" bindtap="openTargetSheet">
-        <view class="row-main">
-          <text class="row-title">目标就寝时间（可选）</text>
-          <text class="row-sub">{{targetSubText}}</text>
+      <!-- 目标入口 -->
+      <view class="goal-row" hover-class="press" bindtap="openTargetSheet" aria-role="button" aria-label="设置目标就寝时间">
+        <view class="goal-clock"></view>
+        <view class="goal-main">
+          <text class="goal-title">就寝目标</text>
+          <text class="goal-sub">{{targetSubText}}</text>
         </view>
-        <text class="row-value">{{targetValueText}}</text>
-        <text class="chevron">›</text>
-      </view>
-
-      <view class="report-card" hover-class="press" bindtap="goReport">
-        <view class="report-main">
-          <text class="report-label">本周周报</text>
-          <view class="report-value">已达标 <text class="em">{{weekMetCount}}</text> 天</view>
-          <text class="report-sub">
-            {{weekCardVisible ? '完整打卡 ' + weekCompleteCount + ' 天 · 查看每日结果' : '查看每日结果'}}
-          </text>
-        </view>
-        <view class="report-arrow">
-          <text class="arrow">›</text>
-        </view>
+        <text class="goal-value">{{targetValueText}}</text>
+        <text class="goal-arrow">›</text>
       </view>
 
       <view class="deadline-note">
@@ -111,6 +146,7 @@
 
 <!-- C-01 几点睡选择器 -->
 <time-picker-sheet
+  theme="{{theme}}"
   data-sheet="sleepSheet"
   visible="{{sleepSheet.visible}}"
   submitting="{{sleepSheet.submitting}}"
@@ -129,6 +165,7 @@
 
 <!-- C-01 几点起选择器 -->
 <time-picker-sheet
+  theme="{{theme}}"
   data-sheet="wakeSheet"
   visible="{{wakeSheet.visible}}"
   submitting="{{wakeSheet.submitting}}"
@@ -147,6 +184,7 @@
 
 <!-- C-02 目标设置 -->
 <target-sheet
+  theme="{{theme}}"
   data-sheet="targetSheet"
   visible="{{targetSheet.visible}}"
   submitting="{{targetSheet.submitting}}"

@@ -9,6 +9,7 @@
  */
 const api = require('../../utils/api.js')
 const T = require('../../utils/time.js')
+const themeUtil = require('../../utils/theme.js')
 
 const BADGE = {
   met: { label: '已达标', cls: 'ok' },
@@ -24,6 +25,7 @@ Page({
   data: {
     statusBarHeight: 20,
     navHeight: 44,
+    theme: 'light',
     loading: true,
     loadFailed: false,
     loadErrorMsg: '',
@@ -49,6 +51,9 @@ Page({
 
   onLoad(options) {
     this.initNav()
+    const theme = themeUtil.resolve()
+    this.setData({ theme })
+    themeUtil.applyNavStyle(theme)
     let weekStart = ''
     if (options && options.weekStart && /^\d{4}-\d{2}-\d{2}$/.test(options.weekStart)) {
       weekStart = options.weekStart

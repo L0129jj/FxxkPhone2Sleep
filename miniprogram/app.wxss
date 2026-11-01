@@ -1,12 +1,11 @@
-/* 全局样式：暖白背景 + 深色文字 */
+/* ============ 全局基础 ============ */
 page {
-  background: #f7f5f1;
-  color: #161615;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC',
     'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   font-size: 28rpx;
   line-height: 1.5;
   -webkit-tap-highlight-color: transparent;
+  background: #f7f4ec;
 }
 
 view,
@@ -14,11 +13,95 @@ text {
   box-sizing: border-box;
 }
 
+/* ============ 主题变量 ============ */
+/* 浅色：暖纸 */
+.theme-light {
+  --bg: #f7f4ec;
+  --page-bg: linear-gradient(180deg, #fcf9f2 0%, #f7f4ec 55%, #f3f0e6 100%);
+  --text: #17171c;
+  --text-2: #4e4b44;
+  --text-3: #6e6960;
+  --card: #ffffff;
+  --card-line: rgba(23, 23, 28, 0.07);
+  --card-shadow: 0 18rpx 34rpx -26rpx rgba(70, 56, 36, 0.38);
+  --divider: rgba(23, 23, 28, 0.07);
+  --chip: rgba(23, 23, 28, 0.05);
+  --chip-line: rgba(23, 23, 28, 0.10);
+  --mint: #0e9a80;
+  --mint-soft: rgba(14, 154, 128, 0.10);
+  --amber: #b57f27;
+  --violet: #6d5bd0;
+  --violet-soft: rgba(109, 91, 208, 0.10);
+  --coral: #d9533f;
+  --seg-off: rgba(23, 23, 28, 0.08);
+  --seg-on: linear-gradient(90deg, #12b39a, #0e9a80);
+  --btn-primary-bg: #17171c;
+  --btn-primary-ink: #ffffff;
+  --btn-ghost-bg: #efede7;
+  --btn-ghost-ink: #45443f;
+  --mask: rgba(12, 12, 11, 0.40);
+  --sheet-bg: #fbfaf7;
+  --ok-bg: #e7f7ee;
+  --ok-ink: #0b7c42;
+  --bad-bg: #fdf0ed;
+  --bad-ink: #b8382b;
+  --pending-bg: #edf2ff;
+  --pending-ink: #294c9e;
+  --muted-bg: #f0efeb;
+  --muted-ink: #6e6960;
+  --future-ink: #8c887d;
+  --tag-bg: #f3f1eb;
+  --tag-ink: #5e5b54;
+}
+
+/* 深色：夜空 */
+.theme-dark {
+  --bg: #080a12;
+  --page-bg: radial-gradient(58% 42% at 82% 4%, rgba(156, 140, 255, 0.34), transparent 62%),
+    radial-gradient(52% 36% at 8% 14%, rgba(94, 234, 212, 0.14), transparent 64%),
+    linear-gradient(180deg, #0b0f1e 0%, #080a12 58%, #0a0c15 100%);
+  --text: #f4f6fb;
+  --text-2: #aab1c4;
+  --text-3: #7e8598;
+  --card: rgba(255, 255, 255, 0.055);
+  --card-line: rgba(255, 255, 255, 0.10);
+  --card-shadow: 0 20rpx 40rpx -30rpx rgba(0, 0, 0, 0.9);
+  --divider: rgba(255, 255, 255, 0.08);
+  --chip: rgba(255, 255, 255, 0.09);
+  --chip-line: rgba(255, 255, 255, 0.16);
+  --mint: #5eead4;
+  --mint-soft: rgba(94, 234, 212, 0.14);
+  --amber: #f3c27e;
+  --violet: #bdb2ff;
+  --violet-soft: rgba(156, 140, 255, 0.16);
+  --coral: #ff9b8a;
+  --seg-off: rgba(255, 255, 255, 0.10);
+  --seg-on: linear-gradient(90deg, #2ed3b7, #5eead4);
+  --btn-primary-bg: #f4f6fb;
+  --btn-primary-ink: #0a0c14;
+  --btn-ghost-bg: rgba(255, 255, 255, 0.09);
+  --btn-ghost-ink: #c6ccda;
+  --mask: rgba(0, 0, 0, 0.55);
+  --sheet-bg: #11141f;
+  --ok-bg: rgba(46, 211, 183, 0.14);
+  --ok-ink: #8df0de;
+  --bad-bg: rgba(255, 155, 138, 0.14);
+  --bad-ink: #ffc3b8;
+  --pending-bg: rgba(120, 150, 255, 0.16);
+  --pending-ink: #b9c8ff;
+  --muted-bg: rgba(255, 255, 255, 0.07);
+  --muted-ink: #aab1c4;
+  --future-ink: #6e7488;
+  --tag-bg: rgba(255, 255, 255, 0.07);
+  --tag-ink: #aab1c4;
+}
+
+/* ============ 通用样式 ============ */
 .card {
-  background: #ffffff;
-  border: 1rpx solid rgba(22, 22, 21, 0.08);
-  border-radius: 32rpx;
-  box-shadow: 0 18rpx 44rpx -40rpx rgba(22, 22, 21, 0.5);
+  background: var(--card);
+  border: 1rpx solid var(--card-line);
+  border-radius: 40rpx;
+  box-shadow: var(--card-shadow);
 }
 
 /* 页面顶部自定义导航占位 */

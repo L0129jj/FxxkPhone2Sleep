@@ -12,12 +12,16 @@
  */
 const api = require('../../utils/api.js')
 const T = require('../../utils/time.js')
+const themeUtil = require('../../utils/theme.js')
 
 Page({
   data: {
     // 自定义导航
     statusBarHeight: 20,
     navHeight: 44,
+
+    // 主题：light | dark
+    theme: 'light',
 
     // 加载状态
     loading: true,
@@ -26,7 +30,6 @@ Page({
 
     // 周期信息
     todayText: '',
-    tagline: '记录睡前是否刷手机，看看每周的改变',
     periodDate: '',
     periodDateText: '',
     deadlineText: '',
@@ -57,6 +60,7 @@ Page({
     weekCardVisible: false,
     weekMetCount: 0,
     weekCompleteCount: 0,
+    weekSegs: [],
 
     // 几点睡弹层
     sleepSheet: {
@@ -114,10 +118,12 @@ Page({
 
   onLoad() {
     this.initNav()
+    this.initTheme()
   },
 
   onShow() {
     // 返回首页重新读取当前周期
+    themeUtil.applyNavStyle(this.data.theme)
     this.fetchAll()
     this.startPeriodWatcher()
   },
@@ -144,6 +150,21 @@ Page({
     }
   },
 
+  /* ---------------- 主题 ---------------- */
+
+  initTheme() {
+    const theme = themeUtil.resolve()
+    this.setData({ theme })
+    themeUtil.applyNavStyle(theme)
+  },
+
+  onToggleTheme() {
+    const theme = themeUtil.toggle(this.data.theme)
+    themeUtil.save(theme)
+    this.setData({ theme })
+    themeUtil.applyNavStyle(theme)
+  },
+
   /* ---------------- 数据读取 ---------------- */
 
   fetchAll() {
@@ -161,10 +182,13 @@ Page({
     api
       .call('getWeeklyReport', { weekStart: T.mondayOf(T.periodDateOf(new Date())) })
       .then((week) => {
+        const met = Math.min(7, Math.max(0, week.metCount || 0))
         this.setData({
           weekCardVisible: true,
           weekMetCount: week.metCount || 0,
-          weekCompleteCount: week.completeCount || 0
+          weekCompleteCount: week.completeCount || 0,
+          // 只表达「已达标的晚数」，不映射到具体星期
+          weekSegs: [0, 1, 2, 3, 4, 5, 6].map((i) => ({ i, on: i < met }))
         })
       })
       .catch(() => {

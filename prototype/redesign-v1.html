@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>睡前记录 · 首页改版提案 v2（双主题）</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    min-height:100vh;padding:44px 36px 56px;
+    display:flex;flex-direction:column;align-items:center;gap:34px;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:#1A1A1E;
+    background:#EDEBE5;
+    background-image:
+      radial-gradient(720px 520px at 6% 0%,rgba(156,140,255,.14),transparent 60%),
+      radial-gradient(680px 500px at 96% 94%,rgba(94,234,212,.15),transparent 62%),
+      linear-gradient(180deg,#F3F1EB,#E6E3DB);
+  }
+  button{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer;padding:0}
+
+  /* ================= 说明区 ================= */
+  .brief{width:840px;max-width:100%}
+  .eyebrow{font-size:11px;letter-spacing:.18em;font-weight:600;color:#8A8578}
+  .brief h1{font-size:27px;line-height:1.3;letter-spacing:-.02em;margin:9px 0 10px}
+  .lead{font-size:13px;line-height:1.75;color:#5B584F;margin:0;max-width:760px}
+  .changes{list-style:none;margin:24px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px 22px}
+  .changes li{display:grid;grid-template-columns:24px 1fr;gap:9px;align-items:start}
+  .changes .no{font-size:11px;font-weight:700;color:#A29C8D;padding-top:2px}
+  .changes .t{font-size:12.5px;font-weight:650;line-height:1.4;margin-bottom:3px}
+  .changes .d{font-size:11.5px;line-height:1.65;color:#6C685E}
+  .changes .d em{font-style:normal;color:#9A9488;text-decoration:line-through}
+  .changes .d b{font-weight:600;color:#26241F}
+
+  .palettes{display:flex;gap:40px;margin-top:26px;flex-wrap:wrap}
+  .pal{display:flex;flex-direction:column;gap:7px}
+  .pal .pt{font-size:10.5px;letter-spacing:.1em;color:#8A8578;font-weight:600}
+  .pal .row{display:flex;gap:7px}
+  .sw{width:46px}
+  .sw i{display:block;height:32px;border-radius:9px;box-shadow:0 6px 14px -10px rgba(0,0,0,.5)}
+  .sw span{display:block;font-size:9px;color:#8A8578;margin-top:4px}
+
+  /* ================= 样机容器 ================= */
+  .devices{display:flex;gap:56px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+  .device{display:flex;flex-direction:column;align-items:center;gap:13px}
+  .dev-label{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.12em;color:#6C685E}
+  .dev-label i{width:6px;height:6px;border-radius:50%}
+  .dev-label .l{background:#C98A2E}
+  .dev-label .d{background:#5EEAD4}
+  .dev-caption{font-size:10.5px;color:#8A8578}
+
+  /* ================= 手机外观 ================= */
+  .phone{
+    position:relative;width:390px;height:844px;padding:10px;border-radius:52px;
+    background:linear-gradient(160deg,#2A2A30,#0B0B0F 55%,#1A1A20);
+    box-shadow:
+      0 70px 110px -46px rgba(10,12,24,.55),
+      0 22px 44px -26px rgba(10,12,24,.4),
+      0 0 0 1px rgba(0,0,0,.5),
+      inset 0 0 0 1px rgba(255,255,255,.08);
+  }
+  .screen{
+    position:relative;width:100%;height:100%;overflow:hidden;border-radius:43px;
+    display:flex;flex-direction:column;isolation:isolate;
+    background:var(--bg);color:var(--text);
+
+    /* ---- 深色主题（默认） ---- */
+    --bg:#080A12;
+    --text:#F4F6FB;
+    --text-2:#AAB1C4;
+    --text-3:#7E8598;
+    --card:rgba(255,255,255,.055);
+    --card-line:rgba(255,255,255,.10);
+    --card-shadow:0 20px 40px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.06);
+    --divider:rgba(255,255,255,.08);
+    --chip:rgba(255,255,255,.09);
+    --seg-off:rgba(255,255,255,.10);
+    --mint:#5EEAD4;
+    --mint-soft:rgba(94,234,212,.14);
+    --amber:#F3C27E;
+    --violet:#BDB2FF;
+    --violet-soft:rgba(156,140,255,.16);
+    --coral:#FF9B8A;
+    --orbit:rgba(255,255,255,.16);
+    --sky:
+      radial-gradient(58% 42% at 82% 6%,rgba(156,140,255,.40),transparent 62%),
+      radial-gradient(52% 36% at 8% 16%,rgba(94,234,212,.16),transparent 64%),
+      radial-gradient(70% 40% at 50% 112%,rgba(255,155,138,.13),transparent 60%),
+      linear-gradient(180deg,#0B0F1E 0%,#080A12 58%,#0A0C15 100%);
+  }
+  .screen.light{
+    --bg:#F7F4EC;
+    --text:#17171C;
+    --text-2:#4E4B44;
+    --text-3:#6E6960;
+    --card:#FFFFFF;
+    --card-line:rgba(23,23,28,.07);
+    --card-shadow:0 18px 34px -26px rgba(70,56,36,.38),inset 0 1px 0 rgba(255,255,255,.9);
+    --divider:rgba(23,23,28,.07);
+    --chip:rgba(23,23,28,.05);
+    --seg-off:rgba(23,23,28,.08);
+    --mint:#0E9A80;
+    --mint-soft:rgba(14,154,128,.10);
+    --amber:#B57F27;
+    --violet:#6D5BD0;
+    --violet-soft:rgba(109,91,208,.10);
+    --coral:#D9533F;
+    --orbit:rgba(23,23,28,.12);
+    --sky:
+      radial-gradient(58% 40% at 84% 2%,rgba(255,223,170,.60),transparent 62%),
+      radial-gradient(52% 34% at 6% 14%,rgba(156,140,255,.13),transparent 64%),
+      radial-gradient(80% 44% at 50% 112%,rgba(94,234,212,.12),transparent 62%),
+      linear-gradient(180deg,#FCF9F2 0%,#F7F4EC 55%,#F3F0E6 100%);
+  }
+
+  .sky{position:absolute;inset:-20% -20% auto -20%;height:120%;z-index:0;pointer-events:none;background:var(--sky)}
+  .stars{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.6}
+  .screen.light .stars{opacity:0}
+  .stars i{position:absolute;display:block;width:2px;height:2px;border-radius:50%;background:rgba(255,255,255,.55)}
+  .stars i:nth-child(1){left:12%;top:9%}
+  .stars i:nth-child(2){left:33%;top:5%;width:1.5px;height:1.5px;opacity:.5}
+  .stars i:nth-child(3){left:64%;top:12%;opacity:.35}
+  .stars i:nth-child(4){left:88%;top:21%;width:1.5px;height:1.5px;opacity:.4}
+  .stars i:nth-child(5){left:24%;top:26%;opacity:.25}
+  .stars i:nth-child(6){left:72%;top:33%;width:1.5px;height:1.5px;opacity:.3}
+
+  .island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:108px;height:27px;border-radius:18px;background:#000;z-index:35}
+  .statusbar{height:50px;flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 5px;font-size:12.5px;font-weight:600;position:relative;z-index:30}
+  .status-right{display:flex;align-items:center;gap:5px}
+  .status-right svg{color:var(--text)}
+  .battery{width:22px;height:11px;border-radius:3px;border:1px solid var(--text);opacity:.9;padding:1px;display:flex}
+  .battery i{width:72%;height:100%;border-radius:1.5px;background:var(--text)}
+
+  .navbar{position:relative;flex:0 0 auto;height:44px;display:flex;align-items:center;justify-content:center;z-index:30}
+  .navbar h2{font-size:16px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .theme-btn{
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--card-line);background:var(--chip);color:var(--text-2);
+    transition:background .2s,transform .16s,border-color .2s;
+  }
+  .theme-btn:active{transform:translateY(-50%) scale(.94)}
+  .theme-btn svg{width:16px;height:16px}
+  .screen:not(.light) .ic-moon{display:none}
+  .screen.light .ic-sun{display:none}
+  .capsule{position:absolute;right:14px;top:50%;transform:translateY(-50%);height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--card-line);background:var(--chip);display:flex;align-items:center;gap:10px}
+  .capsule .dots{letter-spacing:1.5px;font-size:12px;line-height:1;color:var(--text-2);transform:translateY(-2px)}
+  .capsule .sep{width:1px;height:13px;background:var(--divider)}
+  .capsule .ring{width:12px;height:12px;border-radius:50%;border:1.6px solid var(--text-2);position:relative}
+  .capsule .ring::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--text-2)}
+
+  .scroll{position:relative;z-index:5;flex:1;min-height:0;overflow-y:auto;padding:2px 20px 28px;scrollbar-width:none}
+  .scroll::-webkit-scrollbar{display:none}
+
+  /* ================= Hero ================= */
+  .hero{text-align:left;padding:6px 0 0}
+  .date{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:var(--text-2);letter-spacing:.02em}
+  .date i{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 4px var(--mint-soft)}
+  h1.title{font-size:24px;line-height:1.35;letter-spacing:-.02em;font-weight:650;margin:11px 0 5px}
+  .meta{font-size:11px;line-height:1.6;color:var(--text-3)}
+  .meta b{color:var(--text-2);font-weight:600}
+
+  /* ================= 核心动作 ================= */
+  .dial-wrap{display:flex;justify-content:center;margin:20px 0 8px}
+  .dial{
+    position:relative;width:188px;height:188px;border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    isolation:isolate;color:#fff;text-align:center;
+    transition:background .34s ease,box-shadow .34s ease,transform .18s cubic-bezier(.2,.8,.3,1);
+  }
+  .dial:active{transform:scale(.968)}
+  .dial::before{content:"";position:absolute;inset:0;border-radius:50%;z-index:-1;background:var(--dial-bg);box-shadow:var(--dial-shadow)}
+  .dial::after{content:"";position:absolute;inset:-30px;border-radius:50%;z-index:-2;background:radial-gradient(circle,var(--dial-glow),transparent 68%);filter:blur(6px);transition:background .34s ease}
+  .dial.is-yes{
+    --dial-bg:linear-gradient(160deg,#FF9B8A 0%,#E85C4A 52%,#C93F2E 100%);
+    --dial-shadow:0 30px 60px -26px rgba(201,63,46,.65),inset 0 2px 1px rgba(255,255,255,.35),inset 0 -16px 30px rgba(0,0,0,.14);
+    --dial-glow:rgba(232,92,74,.34);
+  }
+  .dial.is-no{
+    --dial-bg:linear-gradient(160deg,#35D3BB 0%,#12A98C 48%,#07785F 100%);
+    --dial-shadow:0 30px 60px -26px rgba(7,120,95,.6),inset 0 2px 1px rgba(255,255,255,.32),inset 0 -16px 30px rgba(0,0,0,.14);
+    --dial-glow:rgba(15,154,128,.34);
+  }
+  .screen.dark .dial.is-yes{--dial-glow:rgba(232,92,74,.42)}
+  .screen.dark .dial.is-no{--dial-glow:rgba(15,154,128,.44)}
+  .dial-hint{font-size:10px;letter-spacing:.16em;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.18);color:rgba(255,255,255,.9);margin-bottom:9px}
+  .dial-main{font-size:76px;line-height:1;font-weight:700;letter-spacing:-.04em}
+  .dial-sub{font-size:12px;letter-spacing:.1em;margin-top:11px;color:rgba(255,255,255,.92)}
+  .dial-orbit{position:absolute;inset:-13px;border-radius:50%;border:1px solid var(--orbit);opacity:.55;pointer-events:none}
+
+  .dial-status{font-size:11px;line-height:1.65;color:var(--text-3);text-align:center;max-width:300px;margin:14px auto 0}
+  .dial-status.warn{color:var(--amber)}
+
+  /* ================= 时间行 ================= */
+  .card{background:var(--card);border:1px solid var(--card-line);border-radius:20px;box-shadow:var(--card-shadow)}
+  .time-row{display:grid;grid-template-columns:1fr 1px 1fr;align-items:center;margin-top:14px;padding:8px 6px}
+  .time-row .div{height:36px;background:var(--divider)}
+  .tf{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:8px 12px;border-radius:14px;text-align:left;transition:background .18s}
+  .tf:active{background:var(--chip)}
+  .tf-label{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--text-3)}
+  .tf-label svg{width:12px;height:12px}
+  .tf-val{font-size:21px;font-weight:650;letter-spacing:-.02em;line-height:1.2}
+  .tf-val.empty{font-size:13px;font-weight:600;color:var(--mint)}
+  .tf-val.empty::before{content:"＋ ";font-weight:400;opacity:.85}
+
+  /* ================= 周进度 ================= */
+  .week{width:100%;margin-top:11px;padding:15px 16px 14px;display:block;text-align:left;transition:transform .16s ease}
+  .week:active{transform:scale(.985)}
+  .week-head{display:flex;align-items:center;justify-content:space-between}
+  .wk-label{font-size:10.5px;letter-spacing:.1em;color:var(--text-3)}
+  .wk-sub{font-size:10px;color:var(--text-3)}
+  .week-main{display:flex;align-items:flex-end;justify-content:space-between;margin-top:7px}
+  .wk-num{display:flex;align-items:baseline;gap:5px;font-size:31px;font-weight:700;letter-spacing:-.03em;line-height:1}
+  .wk-num em{font-style:normal;font-size:13px;font-weight:600;color:var(--text-3);letter-spacing:0}
+  .wk-num span{font-size:11px;font-weight:500;color:var(--text-2);margin-left:2px}
+  .chev{width:28px;height:28px;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center}
+  .chev svg{width:13px;height:13px;color:var(--text-2)}
+  .segs{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:13px}
+  .segs i{height:7px;border-radius:999px;background:var(--seg-off)}
+  .segs i.on{background:linear-gradient(90deg,#2ED3B7,#5EEAD4);box-shadow:0 4px 12px -6px rgba(94,234,212,.7)}
+  .screen.light .segs i.on{background:linear-gradient(90deg,#12B39A,#0E9A80);box-shadow:0 4px 12px -6px rgba(14,154,128,.5)}
+
+  /* ================= 目标 ================= */
+  .goal{width:100%;margin-top:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;text-align:left;transition:transform .16s}
+  .goal:active{transform:scale(.985)}
+  .goal .gi{width:26px;height:26px;border-radius:8px;background:var(--violet-soft);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .goal .gi svg{width:13px;height:13px;color:var(--violet)}
+  .goal .gm{flex:1;min-width:0}
+  .goal .gt{display:block;font-size:11.5px;font-weight:600}
+  .goal .gs{display:block;font-size:9.5px;color:var(--text-3);margin-top:1px}
+  .goal .gv{font-size:12px;font-weight:600;color:var(--text-2)}
+  .goal .gc{width:14px;height:14px;color:var(--text-3);flex:0 0 auto}
+
+  /* ================= 底部 ================= */
+  .foot{margin:16px 6px 0;font-size:9.5px;line-height:1.8;color:var(--text-3);text-align:center}
+  .clear{display:block;margin:8px auto 0;font-size:10px;color:var(--text-3);padding:6px 12px;border-radius:999px;text-decoration:underline;text-underline-offset:3px}
+  .homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:var(--text);opacity:.3;z-index:20}
+</style>
+</head>
+<body>
+
+<header class="brief">
+  <div class="eyebrow">HOME REDESIGN · V2</div>
+  <h1>核心动作回到中心，两套主题一起给</h1>
+  <p class="lead">功能依旧一个不动：是否刷手机、入睡、起床、目标、周报跳转、清空数据。这版把「这一晚」重新做成唯一的视觉主角，并新增可切换的浅色 / 深色主题。</p>
+
+  <ul class="changes">
+    <li>
+      <span class="no">01</span>
+      <div><div class="t">大圆回来了，但不再是红牌</div>
+      <div class="d"><em>420rpx 告警红大球</em> → <b>188px 状态球</b>，刷了是暖珊瑚，没刷是薄荷，点击切换逻辑不变</div></div>
+    </li>
+    <li>
+      <span class="no">02</span>
+      <div><div class="t">它是页面唯一的中心</div>
+      <div class="d">标题压到 24px 一行、去掉副标与胶囊，<b>视线 1 秒落到「是 / 否」</b></div></div>
+    </li>
+    <li>
+      <span class="no">03</span>
+      <div><div class="t">两次录入合成一行</div>
+      <div class="d"><em>两张并列白卡</em> → 一条 72px 高的<b>时间行</b>，退到第二层级</div></div>
+    </li>
+    <li>
+      <span class="no">04</span>
+      <div><div class="t">空状态变成邀请</div>
+      <div class="d"><em>灰色「未填写」</em> → <b>薄荷色「＋ 添加」</b>，一眼知道可点</div></div>
+    </li>
+    <li>
+      <span class="no">05</span>
+      <div><div class="t">0 天做成期待，且不造假</div>
+      <div class="d"><em>「已达标 0 天」黑卡</em> → <b>7 段周进度条</b>，只用 metCount / completeCount，不虚构连续打卡</div></div>
+    </li>
+    <li>
+      <span class="no">06</span>
+      <div><div class="t">左上角一键换肤</div>
+      <div class="d">浅色暖纸 / 深色夜空，<b>同一套语义色变量</b>；是/否的功能色两版一致，记忆选择</div></div>
+    </li>
+  </ul>
+
+  <div class="palettes">
+    <div class="pal">
+      <span class="pt">LIGHT · 暖纸</span>
+      <div class="row">
+        <div class="sw"><i style="background:#F7F4EC"></i><span>#F7F4EC</span></div>
+        <div class="sw"><i style="background:#17171C"></i><span>#17171C</span></div>
+        <div class="sw"><i style="background:#0E9A80"></i><span>#0E9A80</span></div>
+        <div class="sw"><i style="background:#D9533F"></i><span>#D9533F</span></div>
+        <div class="sw"><i style="background:#B57F27"></i><span>#B57F27</span></div>
+      </div>
+    </div>
+    <div class="pal">
+      <span class="pt">DARK · 夜空</span>
+      <div class="row">
+        <div class="sw"><i style="background:#080A12"></i><span>#080A12</span></div>
+        <div class="sw"><i style="background:#F4F6FB"></i><span>#F4F6FB</span></div>
+        <div class="sw"><i style="background:#5EEAD4"></i><span>#5EEAD4</span></div>
+        <div class="sw"><i style="background:#FF9B8A"></i><span>#FF9B8A</span></div>
+        <div class="sw"><i style="background:#F3C27E"></i><span>#F3C27E</span></div>
+      </div>
+    </div>
+    <div class="pal">
+      <span class="pt">TYPE · 字阶</span>
+      <div class="row" style="align-items:flex-end;gap:14px;height:32px">
+        <span style="font-size:24px;font-weight:650;letter-spacing:-.02em">24</span>
+        <span style="font-size:21px;font-weight:650">21</span>
+        <span style="font-size:16px;font-weight:600">16</span>
+        <span style="font-size:11px;color:#8A8578;line-height:1.2">11 说明</span>
+      </div>
+      <span style="font-size:10px;color:#8A8578">触摸区 ≥44 · 圆角 20（卡）/ 14（控件）</span>
+    </div>
+  </div>
+</header>
+
+<div class="devices">
+  <div class="device">
+    <div class="dev-label"><i class="l"></i>浅色 · LIGHT</div>
+    <div id="slot-light"></div>
+    <div class="dev-caption">默认「没刷手机」态 · 点击左上角按钮可切深色</div>
+  </div>
+  <div class="device">
+    <div class="dev-label"><i class="d"></i>深色 · DARK</div>
+    <div id="slot-dark"></div>
+    <div class="dev-caption">默认「刷了手机」态 · 点击大圆可切换状态</div>
+  </div>
+</div>
+
+<template id="phoneTpl">
+  <div class="phone">
+    <div class="screen">
+      <div class="sky"></div>
+      <div class="stars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="island"></div>
+
+      <div class="statusbar">
+        <span>9:09</span>
+        <div class="status-right">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="none"><path d="M1 8.5h2.4v2H1zM4.8 6.8h2.4v3.7h-2.4zM8.6 4.8h2.4v5.7H8.6zM12.4 2.6h2.4v7.9h-2.4z" fill="currentColor"/></svg>
+          <svg width="15" height="11" viewBox="0 0 15 11" fill="none"><path d="M7.5 9.4l1.7-1.9a2.6 2.6 0 00-3.4 0l1.7 1.9zM3.6 5.6l1.5 1.6a4.2 4.2 0 015.8 0l1.5-1.6a6.4 6.4 0 00-8.8 0zM.8 2.6l1.4 1.5a8.2 8.2 0 0110.6 0L14.2 2.6a10.4 10.4 0 00-13.4 0z" fill="currentColor"/></svg>
+          <div class="battery"><i></i></div>
+        </div>
+      </div>
+
+      <div class="navbar">
+        <button class="theme-btn" type="button" aria-label="切换到浅色模式">
+          <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6"/>
+          </svg>
+          <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+            <path d="M20 14.2A8.5 8.5 0 019.8 4a8.6 8.6 0 1010.2 10.2z"/>
+          </svg>
+        </button>
+        <h2>睡前记录</h2>
+        <div class="capsule"><span class="dots">···</span><span class="sep"></span><span class="ring"></span></div>
+      </div>
+
+      <div class="scroll">
+        <section class="hero">
+          <div class="date"><i></i>11月1日 · 周日</div>
+          <h1 class="title">今晚，你刷手机了吗？</h1>
+          <div class="meta">记录 <b>10月31日</b> 这一晚 · 截止 <b>11月1日 12:00</b></div>
+        </section>
+
+        <div class="dial-wrap">
+          <button class="dial is-no" type="button" data-dial aria-label="当前记为没刷手机，点击切换为刷了手机">
+            <span class="dial-orbit"></span>
+            <span class="dial-hint">点击切换</span>
+            <span class="dial-main">否</span>
+            <span class="dial-sub">没刷手机</span>
+          </button>
+        </div>
+        <p class="dial-status">已记为「没刷手机」· 确认入睡时间后保存这一晚</p>
+
+        <div class="card time-row">
+          <button class="tf" type="button" aria-label="填写入睡时间">
+            <span class="tf-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 14.2A8.5 8.5 0 019.8 4a8.6 8.6 0 1010.2 10.2z"/></svg>
+              入睡
+            </span>
+            <span class="tf-val">23:30</span>
+          </button>
+          <span class="div"></span>
+          <button class="tf" type="button" aria-label="填写起床时间">
+            <span class="tf-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg>
+              起床
+            </span>
+            <span class="tf-val empty">添加</span>
+          </button>
+        </div>
+
+        <button class="card week" type="button">
+          <div class="week-head">
+            <span class="wk-label">本周进度</span>
+            <span class="wk-sub">完整打卡 1 天</span>
+          </div>
+          <div class="week-main">
+            <div class="wk-num">2<em>/7</em><span>天达标</span></div>
+            <span class="chev">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+          <div class="segs"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+        </button>
+
+        <button class="card goal" type="button">
+          <span class="gi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></svg>
+          </span>
+          <span class="gm">
+            <span class="gt">就寝目标</span>
+            <span class="gs">未开启时不检查按时睡觉</span>
+          </span>
+          <span class="gv">未设置</span>
+          <svg class="gc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <div class="foot">请于次日 12:00 前补齐起床时间<br>记录由你填写，仅用于习惯回顾，不是睡眠监测</div>
+        <button class="clear" type="button">清空我的全部数据</button>
+      </div>
+
+      <div class="homebar"></div>
+    </div>
+  </div>
+</template>
+
+<script>
+  const tpl = document.getElementById('phoneTpl');
+
+  function mount(slotId, theme, initialValue){
+    const node = tpl.content.cloneNode(true);
+    const screen = node.querySelector('.screen');
+    screen.classList.add(theme);
+    document.getElementById(slotId).appendChild(node);
+
+    const dial = screen.querySelector('[data-dial]');
+    const status = screen.querySelector('.dial-status');
+    const themeBtn = screen.querySelector('.theme-btn');
+
+    dial.dataset.value = initialValue;
+    dial.classList.toggle('is-no', initialValue === 'no');
+    dial.classList.toggle('is-yes', initialValue === 'yes');
+    dial.querySelector('.dial-main').textContent = initialValue === 'yes' ? '是' : '否';
+    dial.querySelector('.dial-sub').textContent = initialValue === 'yes' ? '忍不住刷了手机' : '没刷手机';
+    dial.setAttribute('aria-label', initialValue === 'yes' ? '当前记为刷了手机，点击切换为没刷手机' : '当前记为没刷手机，点击切换为刷了手机');
+    status.textContent = initialValue === 'yes'
+      ? '默认「是」只是待提交值 · 确认入睡时间后才记录'
+      : '已记为「没刷手机」· 确认入睡时间后保存这一晚';
+    themeBtn.setAttribute('aria-label', theme === 'light' ? '切换到深色模式' : '切换到浅色模式');
+
+    dial.addEventListener('click', () => {
+      const next = dial.dataset.value === 'yes' ? 'no' : 'yes';
+      dial.dataset.value = next;
+      dial.classList.toggle('is-no', next === 'no');
+      dial.classList.toggle('is-yes', next === 'yes');
+      dial.querySelector('.dial-main').textContent = next === 'yes' ? '是' : '否';
+      dial.querySelector('.dial-sub').textContent = next === 'yes' ? '忍不住刷了手机' : '没刷手机';
+      dial.setAttribute('aria-label', next === 'yes' ? '当前记为刷了手机，点击切换为没刷手机' : '当前记为没刷手机，点击切换为刷了手机');
+      status.textContent = next === 'yes'
+        ? '默认「是」只是待提交值 · 确认入睡时间后才记录'
+        : '已记为「没刷手机」· 确认入睡时间后保存这一晚';
+    });
+
+    themeBtn.addEventListener('click', () => {
+      const isLight = screen.classList.toggle('light');
+      screen.classList.toggle('dark', !isLight);
+      themeBtn.setAttribute('aria-label', isLight ? '切换到深色模式' : '切换到浅色模式');
+    });
+  }
+
+  mount('slot-light', 'light', 'no');
+  mount('slot-dark', 'dark', 'yes');
+</script>
+</body>
+</html>
