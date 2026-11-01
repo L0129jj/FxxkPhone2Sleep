@@ -25,61 +25,67 @@ exports.main = async (event) => {
     await core.ensureCollections(db)
 
     const { requestId, enabled, targetTime } = event || {}
-    if (typeof enabled !== 'boolean') return core.fail('E_PARAM', '参数错误')
-    if (enabled && !core.isHMStr(targetTime)) return core.fail('E_PARAM', '目标时间格式错误')
-
-    // 幂等重放
-    const prevLog = await core.findSuccessLog(db, requestId, EVENT, OPENID)
-    if (prevLog && prevLog.effective_record_date) {
-      const settings = await core.getSettings(db, OPENID)
-      const ni = core.nowInfo()
-      const p = core.periodDateOf(ni.epoch)
-      return core.ok({
-        effectiveDate: prevLog.effective_record_date,
-        tonightTarget: core.effectiveTarget(settings, p),
-        nextTarget: core.effectiveTarget(settings, core.addDays(p, 1)),
-        replay: true
-      })
+    if (typeof requestId !== 'string' || !/^[a-zA-Z0-9_-]{1,128}$/.test(requestId)) {
+      return core.fail('E_PARAM', '请求标识无效')
     }
 
-    const ni = core.nowInfo()
-    const p = core.periodDateOf(ni.epoch)
+    return await db.runTransaction(async (tx) => {
+      if (typeof enabled !== 'boolean') return core.fail('E_PARAM', '参数错误')
+      if (enabled && !core.isHMStr(targetTime)) return core.fail('E_PARAM', '目标时间格式错误')
 
-    const settings = await core.getSettings(db, OPENID)
-    const isFirstSetting = settings.length === 0
-    const record = await core.getRecord(db, OPENID, p)
-    const tonightSubmitted = !!(record && record.bedtime_at)
-
-    const effectiveDate =
-      isFirstSetting && !tonightSubmitted ? p : core.addDays(p, 1)
-
-    await db.collection('target_settings').add({
-      data: {
-        owner_id: OPENID,
-        enabled,
-        target_time: enabled ? targetTime : '',
-        effective_record_date: effectiveDate,
-        request_id: requestId || '',
-        created_at: new Date()
+      // 幂等重放
+      const prevLog = await core.findSuccessLog(tx, requestId, EVENT, OPENID)
+      if (prevLog && prevLog.effective_record_date) {
+        const settings = await core.getSettings(tx, OPENID)
+        const ni = core.nowInfo()
+        const p = core.periodDateOf(ni.epoch)
+        return core.ok({
+          effectiveDate: prevLog.effective_record_date,
+          tonightTarget: core.effectiveTarget(settings, p),
+          nextTarget: core.effectiveTarget(settings, core.addDays(p, 1)),
+          replay: true
+        })
       }
-    })
 
-    const settingsAfter = await core.getSettings(db, OPENID)
-    await core.writeLog(db, {
-      owner_id: OPENID,
-      request_id: requestId || '',
-      event: EVENT,
-      result: 'success',
-      error_code: '',
-      record_date: '',
-      effective_record_date: effectiveDate
-    })
+      const ni = core.nowInfo()
+      const p = core.periodDateOf(ni.epoch)
 
-    return core.ok({
-      effectiveDate,
-      tonightTarget: core.effectiveTarget(settingsAfter, p),
-      nextTarget: core.effectiveTarget(settingsAfter, core.addDays(p, 1)),
-      targetExists: settingsAfter.length > 0
+      const settings = await core.getSettings(tx, OPENID)
+      const isFirstSetting = settings.length === 0
+      const record = await core.getRecord(tx, OPENID, p)
+      const tonightSubmitted = !!(record && record.bedtime_at)
+
+      const effectiveDate =
+        isFirstSetting && !tonightSubmitted ? p : core.addDays(p, 1)
+
+      await tx.collection('target_settings').add({
+        data: {
+          owner_id: OPENID,
+          enabled,
+          target_time: enabled ? targetTime : '',
+          effective_record_date: effectiveDate,
+          request_id: requestId || '',
+          created_at: new Date()
+        }
+      })
+
+      const settingsAfter = await core.getSettings(tx, OPENID)
+      await core.writeLog(tx, {
+        owner_id: OPENID,
+        request_id: requestId || '',
+        event: EVENT,
+        result: 'success',
+        error_code: '',
+        record_date: '',
+        effective_record_date: effectiveDate
+      })
+
+      return core.ok({
+        effectiveDate,
+        tonightTarget: core.effectiveTarget(settingsAfter, p),
+        nextTarget: core.effectiveTarget(settingsAfter, core.addDays(p, 1)),
+        targetExists: settingsAfter.length > 0
+      })
     })
   } catch (e) {
     console.error('updateTarget error', e)

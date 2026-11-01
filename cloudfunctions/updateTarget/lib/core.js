@@ -235,12 +235,9 @@ async function ensureUser(db, openid) {
 }
 
 async function getRecord(db, openid, dateStr) {
-  try {
-    const r = await db.collection('nightly_records').doc(recordId(openid, dateStr)).get()
-    return (r && r.data) || null
-  } catch (e) {
-    return null
-  }
+  const r = await db.collection('nightly_records')
+    .where({ _id: recordId(openid, dateStr) }).limit(1).get()
+  return (r.data && r.data[0]) || null
 }
 
 async function getSettings(db, openid) {
@@ -253,40 +250,29 @@ async function getSettings(db, openid) {
       .get()
     return (r && r.data) || []
   } catch (e) {
-    return []
+    throw e
   }
+}
+
+function logId(requestId, event, openid) {
+  return require('crypto').createHash('sha256')
+    .update(JSON.stringify([openid, event, requestId])).digest('hex')
 }
 
 async function findSuccessLog(db, requestId, event, openid) {
-  if (!requestId) return null
-  try {
-    const r = await db
-      .collection('operation_logs')
-      .where({ request_id: requestId, event, result: 'success' })
-      .limit(1)
-      .get()
-    const log = (r.data && r.data[0]) || null
-    // 日志必须属于当前用户，避免不同用户的 requestId 碰撞造成误重放
-    if (!log || log.owner_id !== openid) return null
-    return log
-  } catch (e) {
-    return null
-  }
+  const r = await db.collection('operation_logs')
+    .where({ _id: logId(requestId, event, openid) }).limit(1).get()
+  return (r.data && r.data[0]) || null
 }
 
-/** 写操作日志；顺带以约 10% 概率清理 30 天前日志 */
+// 必须使用事务：日志失败时回滚业务写入，同一请求共用固定文档 ID。
 async function writeLog(db, entry) {
-  try {
-    await db.collection('operation_logs').add({
-      data: Object.assign({ created_at: new Date() }, entry)
-    })
-    if (Math.random() < 0.1) {
-      const cutoff = new Date(Date.now() - 30 * DAY)
-      await db.collection('operation_logs').where({ created_at: db.command.lt(cutoff) }).remove()
-    }
-  } catch (e) {
-    /* 日志失败不影响主流程 */
-  }
+  await db.collection('operation_logs').add({
+    data: Object.assign({
+      _id: logId(entry.request_id, entry.event, entry.owner_id),
+      created_at: new Date()
+    }, entry)
+  })
 }
 
 /* ---------------- 响应封装 ---------------- */
